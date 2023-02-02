@@ -99,8 +99,11 @@ install_base(){
 # Chroot into installation
 arch_chroot(){
   cp ./install.sh /mnt/root/install.sh
+  cp ./hyprland.sh /mnt/root/hyprland.sh
   chown root:root /mnt/root/install.sh
+  chown root:root /mnt/root/hyprland.sh
   chmod +x /mnt/root/install.sh
+  chmod +x /mnt/root/hyprland.sh
   arch-chroot /mnt /bin/bash << EOF
 ./root/install.sh chroot
 EOF
@@ -230,8 +233,13 @@ if [ "$1" == "chroot" ]
 then
   after_chroot
   clear
+  cp /root/hyprland.sh /home/$USERNAME
+  chown $USERNAME /home/$USERNAME/hyprland.sh
+  rm /root/install.sh
+  rm /root/hyprland.sh
   echo "Basic arch install complete."
   echo "Now reboot and run your configuration script."
+
 else
   before_chroot
 fi
