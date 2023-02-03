@@ -174,7 +174,7 @@ configure_grub(){
 
 # Add users
 setup_user(){
-  useradd -mG  wheel,video,network,lp "$USERNAME"
+  useradd -mG  wheel,video,network,lp,docker,power "$USERNAME"
   echo -en "$PASSWORD\n$PASSWORD" | passwd $USERNAME
   sed -i 's/# %wheel ALL=(ALL:ALL) ALL/ %wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
 }
