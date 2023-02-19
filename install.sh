@@ -82,8 +82,8 @@ mount_drives(){
 
   umount /mnt
 
-  mkdir -p /mnt/{boot,home,.snapshots,var}
   mount -o noatime,compress=zstd,space_cache=v2,subvol=@ /dev/"$btrfs_partiton" /mnt
+  mkdir -p /mnt/{boot,home,.snapshots,var}
   mount -o noatime,compress=zstd,space_cache=v2,subvol=@home /dev/"$btrfs_partiton" /mnt/home
   mount -o noatime,compress=zstd,space_cache=v2,subvol=@snapshots /dev/"$btrfs_partiton" /mnt/.snapshots
   mount -o noatime,compress=zstd,space_cache=v2,subvol=@var /dev/"$btrfs_partiton" /mnt/var
@@ -124,9 +124,9 @@ set_locale(){
 # Set hosts
 set_hosts(){
   cat >> /etc/hosts << EOF
-127.0.0.1	    localhost
-::1		        localhost
-127.0.0.1   	$HOSTNAME.localdomain	$HOSTNAME
+127.0.0.1           localhost
+::1                 localhost
+127.0.0.1   	    $HOSTNAME.localdomain	$HOSTNAME
 EOF
 }
 
@@ -196,12 +196,6 @@ configure_pacman(){
   reflector -c India --verbose --sort rate -l 10 --save /etc/pacman.d/mirrorlist
 }
 
-# Setup zram
-setup_zram(){
-  pacman -S --noconfirm zramd
-  systemctl enable --now zramd
-}
-
 # Before chroot
 before_chroot(){
   pre_install
@@ -223,10 +217,9 @@ after_chroot(){
   set_hosts
   install_packages
   config_mkinitcpio
-  configure_grub
+  configure_grub 
   setup_user
   set_daemons
-  setup_zram
 }
 
 if [ "$1" == "chroot" ]

@@ -19,8 +19,15 @@ EOL
 EOL
 }
 
+# Setup zram
+setup_zram(){
+  pacman -S --noconfirm zramd
+  systemctl enable --now zramd
+}
+
 main(){
     hyprland_bootstrap
     hyprland_config
+    setup_zram
 }
 main
