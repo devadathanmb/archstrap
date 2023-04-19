@@ -172,8 +172,28 @@ configure_grub(){
   grub-mkconfig -o /boot/grub/gurb.cfg
 }
 
+# Configure systemd-boot
+configure_systemd_boot() {
+  bootctl install
+
+  cat > /boot/loader/loader.conf <<EOF
+default arch
+timeout 4
+EOF
+
+  root_partition=$(mount | grep ' / ' | cut -d' ' -f1)
+  cat > /boot/loader/entries/arch.conf <<EOF
+title Arch Linux
+linux /vmlinuz-linux
+initrd /$VIDEO_DRIVER-ucode.img
+initrd /initramfs-linux.img
+options root=${root_partition} rw
+EOF
+}
+
 # Add users
 setup_user(){
+  pacman -S --noconfirm docker
   useradd -mG  wheel,video,network,lp,docker,power "$USERNAME"
   echo -en "$PASSWORD\n$PASSWORD" | passwd $USERNAME
   sed -i 's/# %wheel ALL=(ALL:ALL) ALL/ %wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
@@ -217,7 +237,7 @@ after_chroot(){
   set_hosts
   install_packages
   config_mkinitcpio
-  configure_grub 
+  configure_systemd_boot
   setup_user
   set_daemons
 }
