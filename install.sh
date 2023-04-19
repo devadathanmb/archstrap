@@ -72,8 +72,8 @@ format_drives(){
 # Mount drives
 mount_drives(){
   local boot_partiton="$DRIVE"1
-  local btrfs_partiton="$DRIVE"2
-  mount /dev/"$btrfs_partiton" /mnt
+  local root_partition="$DRIVE"2
+  mount /dev/"$root_partition" /mnt
 
   btrfs su cr /mnt/@
   btrfs su cr /mnt/@home
@@ -82,18 +82,18 @@ mount_drives(){
 
   umount /mnt
 
-  mount -o noatime,compress=zstd,space_cache=v2,subvol=@ /dev/"$btrfs_partiton" /mnt
+  mount -o noatime,compress=zstd,space_cache=v2,subvol=@ /dev/"$root_partition" /mnt
   mkdir -p /mnt/{boot,home,.snapshots,var}
-  mount -o noatime,compress=zstd,space_cache=v2,subvol=@home /dev/"$btrfs_partiton" /mnt/home
-  mount -o noatime,compress=zstd,space_cache=v2,subvol=@snapshots /dev/"$btrfs_partiton" /mnt/.snapshots
-  mount -o noatime,compress=zstd,space_cache=v2,subvol=@var /dev/"$btrfs_partiton" /mnt/var
+  mount -o noatime,compress=zstd,space_cache=v2,subvol=@home /dev/"$root_partition" /mnt/home
+  mount -o noatime,compress=zstd,space_cache=v2,subvol=@snapshots /dev/"$root_partition" /mnt/.snapshots
+  mount -o noatime,compress=zstd,space_cache=v2,subvol=@var /dev/"$root_partition" /mnt/var
 
   mount /dev/"$boot_partiton" /mnt/boot
 }
 
 # Base install
 install_base(){
-  pacstrap -K /mnt base base-devel vim btrfs-progs linux linux-firmware vim amd-ucode
+  pacstrap -K /mnt base base-devel vim btrfs-progs linux linux-firmware amd-ucode
 }
 
 # Chroot into installation
@@ -174,8 +174,9 @@ configure_grub(){
 
 # Add users
 setup_user(){
+  pacman -S --no-confirm docker 
   useradd -mG  wheel,video,network,lp,docker,power "$USERNAME"
-  echo -en "$PASSWORD\n$PASSWORD" | passwd $USERNAME
+  echo -en "$PASSWORD\n$PASSWORD" | passwd "$USERNAME"
   sed -i 's/# %wheel ALL=(ALL:ALL) ALL/ %wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
 }
 
