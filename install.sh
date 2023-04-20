@@ -85,7 +85,7 @@ mount_drives(){
   mount -o noatime,compress=zstd,space_cache=v2,subvol=@ /dev/"$root_partition" /mnt
   mkdir -p /mnt/{boot,home,.snapshots,var}
   mount -o noatime,compress=zstd,space_cache=v2,subvol=@home /dev/"$root_partition" /mnt/home
-  mount -o noatime,compress=zstd,space_cache=v2,subvol=@snapshots /dev/"$root_partition" /mnt/.snapshots
+  mount -o noatime,compress=zstd,space_cache=v2,subvol=@.snapshots /dev/"$root_partition" /mnt/.snapshots
   mount -o noatime,compress=zstd,space_cache=v2,subvol=@var /dev/"$root_partition" /mnt/var
 
   mount /dev/"$boot_partiton" /mnt/boot
