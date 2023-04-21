@@ -6,7 +6,7 @@ This is a basic bootstrap script for my preferred arch linux installation with h
 
 Basically all the good old manual stuff
 
-- Set up pacman mirrors
+- Configure pacman and set up mirrors
 - Delete all existing partitions
 - Create an EFI partition of 500MB and root partition of rest of the space
 - Format root partition with btrfs filesystem
